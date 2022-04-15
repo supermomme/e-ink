@@ -459,29 +459,6 @@ void EPD_loadF()
 /* Image data loading function for 5.65f e-Paper -----------------------------*/
 void EPD_loadG()
 {
-    // Come back to the image data end
-    Buff__bufInd -= 8;
-
-    // Get the index of the image data begin
-    int pos = Buff__bufInd - Buff__getWord(Buff__bufInd);
-
-    // Enumerate all of image data bytes
-    while (pos < Buff__bufInd)
-    {
-        // Get current byte from obtained image data
-        int value = Buff__getByte(pos);  
-		
-        // Switch the positions of the two 4-bits pixels
-        // Black:0b000;White:0b001;Green:0b010;Blue:0b011;Red:0b100;Yellow:0b101;Orange:0b110;
-        int A = (value     ) & 0x07;
-        int B = (value >> 4) & 0x07;
-		
-        // Write the data into e-Paper's memory
-        EPD_SendData((byte)(A << 4) + B);
-		
-        // Increment the current byte index on 2 characters
-        pos += 2;
-    }
 }
 
 /* Show image and turn to deep sleep mode (a-type, 4.2 and 2.7 e-Paper) ------*/
