@@ -12,7 +12,7 @@ ctx.fillRect( 0, 0, 50, 50 );
 // Write "Awesome!"
 ctx.font = '100px Impact'
 ctx.rotate(0.1)
-ctx.fillText('Codeanker ! :D', 50, 100)
+ctx.fillText('Test 2', 50, 100)
 ctx.rotate(-0.1)
 
 // Draw line under text
@@ -25,7 +25,7 @@ ctx.stroke()
 
 ctx.font = '100px Impact'
 ctx.rotate(-0.2)
-ctx.fillText('Yay', 300, 500)
+ctx.fillText('Moin', 300, 500)
 ctx.rotate(0.2)
 
 
