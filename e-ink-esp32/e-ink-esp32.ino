@@ -3,12 +3,17 @@
 #include <WiFi.h>
 
 // TCP Sockets
-const IPAddress serverIP(192,168,137,1); // TCP Server IP
+const IPAddress serverIP(10,0,1,18); // TCP Server IP
 uint16_t serverPort = 4000;             // Port
 
  // Wifi 
-const char* ssid = "DESKTOP-T77D0VL"; // Wifi ssid
-const char* pass = "tomate123";   // Wifi password
+const char* ssid = "xx"; // Wifi ssid
+const char* pass = "xx";   // Wifi password
+
+#define uS_TO_S_FACTOR 1000000  /* Conversion factor for micro seconds to seconds */
+#define TIME_TO_SLEEP  60        /* Time ESP32 will go to sleep (in seconds) */
+
+RTC_DATA_ATTR int bootCount = 0;
 
 WiFiClient client; 
 
@@ -42,6 +47,21 @@ void setup()
     Serial.print(".");
   }
   Serial.println("TCP socket connected");
+  
+  // Check Update Available
+  client.print("UPDATE_AVAILABLE");
+  while (client.available() == 0) {}
+  byte b = client.read();
+  Serial.println(b, HEX);
+  if (b == 0x00) {
+    Serial.println("No Update");
+    client.stop();
+    delay(100);
+    goDeepSleep();
+    return;
+  }
+
+  // Get Img
   client.print("GET_IMG");
   int bitsReceived = 0;
   while (bitsReceived < 38880) {
@@ -51,10 +71,19 @@ void setup()
       bitsReceived++;
     }
   }
-  EPD_showC();
   client.stop();
-  Serial.println("NOW SLEEP AGAIN!");
-  // TODO: deep sleep
+
+  // apply
+  EPD_showC();
+
+  // deep sleep
+  goDeepSleep();
+}
+
+void goDeepSleep() {
+  Serial.println("Go Deep Sleep");
+  esp_sleep_enable_timer_wakeup(TIME_TO_SLEEP * uS_TO_S_FACTOR);
+  esp_deep_sleep_start();
 }
 
 
